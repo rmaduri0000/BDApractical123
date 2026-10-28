@@ -1,0 +1,47 @@
+MongoDB Basic CRUD Commands
+
+use college
+
+db.createCollection("students")
+
+db.students.insertOne({
+     name: "Jagdish",
+     age: 21,
+     branch: "Computer",
+     cgpa: 8.23
+})
+
+db.students.insertMany([
+     {
+          name: "Rahul",
+          age: 21,
+          branch: "Computer",
+          cgpa: 8.5
+     },
+     {
+          name: "Amit",
+          age: 22,
+          branch: "IT",
+          cgpa: 8.1
+     }
+])
+
+db.students.find()
+
+db.students.find({name: "Jagdish"})
+
+db.students.find({cgpa: {$gt: 8}})
+
+db.students.updateOne(
+    {name: "Jagdish"},
+    {$set: {cgpa: 8.5}}
+)
+
+db.students.updateMany(
+    {branch: "Computer"},
+    {$set: {department: "CE"}}
+)
+
+db.students.deleteOne({name: "Amit"})
+
+db.students.deleteMany({branch: "IT"})

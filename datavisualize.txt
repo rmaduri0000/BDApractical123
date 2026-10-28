@@ -1,0 +1,59 @@
+Data Visualization in R
+
+# Bar Chart
+
+marks <- c(70, 80, 65, 90, 75)
+
+names <- c("A", "B", "C", "D", "E")
+
+barplot(marks,
+    names.arg = names,
+    main = "Student Marks",
+    xlab = "Students",
+    ylab = "Marks")
+
+# Pie Chart
+
+marks <- c(70, 80, 65, 90, 75)
+
+names <- c("A", "B", "C", "D", "E")
+
+pie(marks,
+  labels = names,
+  main = "Student Marks")
+
+# Line Chart
+
+months <- c("Jan", "Feb", "Mar", "Apr", "May")
+
+sales <- c(20, 30, 25, 40, 50)
+
+plot(sales,
+   type = "o",
+   main = "Monthly Sales",
+   xlab = "Month",
+   ylab = "Sales",
+   xaxt = "n")
+
+axis(1, at = 1:5, labels = months)
+
+# Histogram
+
+marks <- c(45, 50, 55, 60, 65, 70, 72, 75, 80, 85, 90, 95)
+
+hist(marks,
+   main = "Marks Distribution",
+   xlab = "Marks",
+   ylab = "Frequency")
+
+# Scatter Plot
+
+hours <- c(1, 2, 3, 4, 5, 6)
+
+marks <- c(40, 50, 55, 65, 70, 80)
+
+plot(hours, marks,
+   main = "Study Hours vs Marks",
+   xlab = "Study Hours",
+   ylab = "Marks",
+   pch = 19)

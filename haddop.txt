@@ -1,0 +1,35 @@
+HDFS commands
+
+hadoop version
+
+start-dfs.sh
+
+jps
+
+echo "Hello Hadoop" > test.txt
+
+hdfs dfs -mkdir /input
+
+hdfs dfs -put test.txt /input/
+
+hdfs dfs -ls /input
+
+hdfs dfs -get /input/test.txt .
+
+ls
+
+cat test.txt
+
+hdfs dfs -rm /input/test.txt
+
+hdfs dfs -ls /input
+
+hdfs dfs -mkdir /output
+
+hdfs dfs -put test.txt /input/
+
+hdfs dfs -mv /input/test.txt /output/
+
+hdfs dfs -ls /output
+
+hdfs dfs -cat /output/test.txt
