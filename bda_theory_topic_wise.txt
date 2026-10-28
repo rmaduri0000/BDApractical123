@@ -1,0 +1,152 @@
+BDA PRACTICAL THEORY — TOPIC-WISE EXTRACTION
+Source: bdapratical theory.pdf
+Note: This document contains the theory sections organized by practical topic. Program code has been excluded.
+
+1. HADOOP HDFS PRACTICAL
+Topics: HDFS basics, Hadoop ecosystem tools, copying files to Hadoop, copying files from HDFS and deleting files, moving and displaying files in HDFS.
+
+Definition and Architecture:
+The Hadoop Distributed File System (HDFS) is a fault-tolerant, distributed file system designed to store petabyte-scale datasets reliably across large clusters of commodity hardware using a Master-Slave architecture.
+
+Core Architectural Components:
+• NameNode (Master): Manages the file system namespace, directory structures, block locations, and file metadata entirely in main memory.
+• DataNode (Slave): Deployed on worker machines to store physical data blocks (default block size 64 MB) and handle client read/write streaming requests.
+• Secondary NameNode: Periodically merges the edits log with the FsImage metadata snapshot to reduce NameNode restart recovery time.
+
+Storage Principles and Commands:
+• Files uploaded to HDFS are partitioned into blocks and replicated (default replication factor = 3) across multiple physical racks for fault tolerance.
+• Commands are executed via hdfs dfs:
+  - -put / -copyFromLocal: uploads local files to HDFS.
+  - -copyToLocal / -get: downloads files from HDFS.
+  - -ls: lists directory contents.
+  - -cat: displays file contents.
+  - -mv: moves/renames files.
+  - -rm: deletes files.
+
+2. MAPREDUCE WORD COUNT
+Definition:
+MapReduce is a distributed parallel programming model based on a divide-and-conquer strategy that processes massive datasets concurrently across Hadoop cluster nodes.
+
+Sequential Processing Phases:
+1. Map Phase: The Mapper reads input split key-value pairs (line offset, text content), tokenizes lines into individual words, and emits intermediate key-value pairs as <word, 1>.
+2. Shuffle and Sort Phase: The MapReduce framework automatically routes, shuffles, and sorts intermediate output keys over the network, grouping identical keys together into a list structure like <word, ...>.
+3. Reduce Phase: The Reducer receives each unique key and its aggregated list of values, sums the counts, and emits the final output key-value pair <word, total_count> to HDFS.
+
+Management Components:
+• JobTracker (or YARN ResourceManager) coordinates job execution and resource allocation.
+• TaskTrackers (or NodeManagers) execute individual map and reduce tasks on worker nodes.
+• Combiners are optional mini-reducers that run on the mapper side to minimize network data transfers.
+
+3. FLAJOLET-MARTIN (FM) ALGORITHM
+Definition:
+The Flajolet-Martin (FM) algorithm is a space-efficient data stream algorithm designed to estimate the number of distinct elements (cardinality F0) in a high-velocity stream in a single pass using minimal main memory.
+
+Working Principle and Hash Mapping:
+• Hash Function Mapping: Each incoming stream element x is hashed using a uniform hash function h(x) to a binary bit-string of length L.
+• Trailing Zeros r(x): The algorithm computes r(x), defined as the count of trailing zeros (or the 0-indexed position of the first 1 bit from the right) in h(x).
+• Tracking Maximum Tail R: The algorithm maintains a global variable R = max(r(x)) across all elements processed in the stream.
+• Cardinality Estimation: Since 2^-r is the fraction of hashed elements that end with r zeros, observing a maximum tail of R zeros indicates that approximately 2^R distinct elements have passed through the stream (F0 is approximately 2^R).
+
+4. DGIM ALGORITHM
+Definition:
+The Datar–Gionis–Indyk–Motwani (DGIM) algorithm estimates the number of 1s in a binary data stream sliding window of size N using O(log² N) bits of memory, guaranteeing an estimate with a maximum error bound of 50%.
+
+Bucket Rules and Constraints:
+• The active sliding window is represented as a contiguous sequence of logical structures called buckets.
+• Right-End Boundary: Every bucket's rightmost timestamp must correspond to a bit position containing a 1.
+• Power-of-2 Sizes: The number of 1s contained in any bucket must strictly be a power of 2 (1, 2, 4, 8, ..., 2^j).
+• Bucket Count Rule: There can exist either one or two buckets of any given power-of-2 size at any instant.
+• Monotonic Ordering and Expiration: Buckets are ordered by size from recent (right) to old (left). A bucket is expired and dropped when its timestamp falls beyond the window length N.
+
+Update and Querying Mechanism:
+• When a new 1 arrives, a bucket of size 1 is created. If three buckets of size 1 exist, the oldest two are merged into a single bucket of size 2, propagating recursive merges if needed.
+• To estimate active 1s, the algorithm sums the full sizes of all non-overlapping buckets within the window plus half the size (C/2) of the oldest overlapping bucket.
+
+5. NoSQL DATABASE AND MONGODB CRUD
+Definition:
+NoSQL (“Not Only SQL”) refers to non-relational, schema-free database systems designed to store, manage, and query massive volumes of unstructured, semi-structured, and high-velocity data across distributed horizontal clusters.
+
+Core Features of NoSQL:
+1. Dynamic Schema Flexibility: Accommodates evolving or sparse data structures without requiring upfront schema definitions or ALTER TABLE operations.
+2. Horizontal Scalability (Scale-Out): Spans across commodity hardware clusters using sharding and auto-partitioning.
+3. BASE Consistency Model: Prioritizes Basically Available, Soft-state, and Eventual consistency over strict relational ACID guarantees.
+
+MongoDB Architecture and CRUD Operations:
+• MongoDB is a document-oriented NoSQL database that stores data in hierarchical, semi-structured BSON (Binary JSON) documents organized inside collections.
+• Create: insertOne() or insertMany() inserts document records into a collection.
+• Read: find(query, projection) retrieves documents matching search conditions.
+• Update: updateOne() or updateMany() modifies existing document attributes using update operators like $set.
+• Delete: deleteOne() or deleteMany() removes documents matching query filters.
+
+6. DATA VISUALIZATION IN R
+Definition:
+Data visualization in R utilizes built-in statistical graphics utilities and external packages (such as ggplot2) to visually inspect data distributions, structural patterns, correlations, and outliers.
+
+Five Core Visualization Techniques:
+1. Scatter Plot (plot(x, y)): Displays individual data observations on a two-dimensional Cartesian plane to evaluate bivariate relationships and correlations between two continuous variables.
+2. Histogram (hist(x)): Groups continuous data into adjacent non-overlapping intervals (bins) to show frequency distribution, skewness, spread, and central tendency.
+3. Boxplot (boxplot(x)): Visualizes the five-number summary (Minimum, Q1, Median, Q2, Q3, Maximum) and highlights statistical outliers.
+4. Bar Plot (barplot(height)): Displays discrete categorical variables using proportional rectangular bars to compare frequency counts across categories.
+5. Line Chart (plot(x, y, type="l")): Connects sequential data points with line segments, used for time-series analysis and trend tracking over continuous intervals.
+
+7. SIMPLE LINEAR REGRESSION IN R
+Definition:
+Simple Linear Regression is a supervised statistical modeling method used to quantify the linear relationship between a single continuous independent predictor variable (X) and a continuous dependent response variable (Y).
+
+Mathematical Model:
+Y = β₀ + β₁X + ε
+where β₀ represents the Y-intercept, β₁ is the slope coefficient, and ε is the random error term.
+
+Working Principle and Implementation in R:
+• Model Fitting: Executed using lm(formula = Y ~ X, data = dataset), which calculates parameter estimates (β₀, β₁) by applying Ordinary Least Squares (OLS) to minimize the Residual Sum of Squares (RSS).
+• Model Evaluation: Inspected using summary(model) to analyze predictor statistical significance (p-value), model fit via Coefficient of Determination (R²), and standard error.
+• Prediction: The predict(model, newdata) function applies the fitted linear equation to estimate response values for new predictor observations.
+
+8. LOGISTIC REGRESSION IN R
+Definition:
+Logistic Regression is a supervised classification technique used to model the probability of a binary categorical outcome (Y ∈ {0,1}) based on one or more continuous or categorical predictor variables (X).
+
+Logit Link Function and Model Formulation:
+Because linear regression can produce output values outside 1, Logistic Regression uses the logit link function (log-odds) to bound output probabilities:
+
+ln(p / (1 - p)) = β₀ + β₁X
+p = P(Y = 1 | X) = 1 / (1 + e^-(β₀ + β₁X))
+
+Working Principle and Implementation in R:
+• Model Fitting: Constructed using Generalized Linear Models via glm(formula = Y ~ X, family = binomial, data = dataset).
+• Parameter Estimation: Parameters are estimated using Maximum Likelihood Estimation (MLE) rather than OLS.
+• Model Assessment: Evaluated using Akaike Information Criterion (AIC), Null/Residual Deviance, and Confusion Matrix metrics (Accuracy, Sensitivity, Specificity). Predicted probabilities generated via predict(model, type = "response") are classified using a threshold (typically 0.5).
+
+9. MULTIPLE LINEAR REGRESSION IN R
+Definition:
+Multiple Linear Regression extends simple linear regression to model the linear relationship between a single continuous response variable (Y) and multiple independent predictor variables (X₁, X₂, …, Xₙ).
+
+Mathematical Model:
+Y = β₀ + β₁X₁ + β₂X₂ + ... + βₙXₙ + ε
+
+Working Principle and Diagnostic Evaluation:
+• Model Fitting: Created in R using lm(Y ~ X1 + X2 + X3, data = dataset) to estimate partial regression coefficients.
+• Statistical Assessment: Assessed via Adjusted R² (which penalizes irrelevant predictors) and the F-statistic (which tests overall regression significance).
+
+Diagnostic Plots (plot(model)):
+1. Residuals vs Fitted: Checks for linearity and constant variance (homoscedasticity).
+2. Normal Q-Q Plot: Verifies whether residual errors follow a normal distribution.
+3. Scale-Location Plot: Examines homoscedasticity across fitted values.
+4. Residuals vs Leverage: Identifies influential observations and high-leverage outliers using Cook's distance metrics.
+
+10. GIRVAN-NEWMAN ALGORITHM FOR COMMUNITY DETECTION
+Definition:
+Community detection in social network analytics aims to identify dense subgraphs (tightly knit groups of entities) separated by sparse connections (inter-community edges).
+
+Girvan-Newman Algorithm Principle:
+• It is a hierarchical divisive clustering algorithm that uses Edge Betweenness (EB) as a dissimilarity metric.
+• Edge Betweenness (EB): Defined as the total number of shortest paths between all pairs of nodes in a graph that pass through a specific edge. Edges connecting different dense communities have high EB scores.
+
+Algorithm Steps:
+1. Calculate the Edge Betweenness score for every edge in the graph G = (V, E).
+2. Identify and remove the edge(s) with the highest EB score.
+3. Recompute EB scores for all remaining edges in the modified graph.
+4. Repeat iteratively until the network breaks into mutually disjoint communities or a complete dendrogram is formed.
+
+R Implementation (igraph):
+• Uses the igraph package: graphs are instantiated via graph_from_data_frame(), communities are computed using cluster_edge_betweenness(), and community structures are visualized using plot().
